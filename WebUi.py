@@ -154,56 +154,52 @@ st.markdown('Does an increase in pesticide use cause an increase in crop yields,
 # Load the dataset
 data = pd.read_csv('cleaned_pesticide_data.csv')
 
-# Function to plot the graph for a specific area in pesticide dataset
-def plot_pesticide_data(area_name, data):
-    if area_name not in data['Area'].unique():
-        st.error(f"Area '{area_name}' not found in the dataset.")
+# Function to plot the graph for a specific country in fertilizer dataset
+def plot_fertilizer_data(country_name, data):
+    if country_name not in data['Country'].unique():
+        print(f"Country '{country_name}' not found in the dataset.")
         return
     
-    area_data = data[data['Area'] == area_name]
+    country_data = data[data['Country'] == country_name]
     
-    # Create a figure with 3 subplots
-    fig, axes = plt.subplots(1, 3, figsize=(20, 6), constrained_layout=True)
+    # Create a figure with 2 subplots
+    fig, axes = plt.subplots(1, 2, figsize=(15, 5), constrained_layout=True)
     
-    # Boxplot for Pesticide Use
-    sns.boxplot(ax=axes[0], x=area_data['Pesticide Use (tonnes)'])
-    axes[0].set_title(f'Pesticide Use in {area_name}')
-    axes[0].set_xlabel('Pesticide Use (tonnes)')
+    # Boxplot for Fertilizer Use
+    sns.boxplot(ax=axes[0], x=country_data['Nitrogen Fertilizer Use (kg/ha)'])
+    axes[0].set_title(f'Fertilizer Use in {country_name}')
+    axes[0].set_xlabel('Fertilizer Use (kg/ha)')
     
     # Boxplot for Crop Yield
-    sns.boxplot(ax=axes[1], x=area_data['Crop Yield (hg/ha)'])
-    axes[1].set_title(f'Crop Yield in {area_name}')
-    axes[1].set_xlabel('Crop Yield (hg/ha)')
+    sns.boxplot(ax=axes[1], x=country_data['Cereal Yield (tonnes/ha)'])
+    axes[1].set_title(f'Crop Yield in {country_name}')
+    axes[1].set_xlabel('Crop Yield (tonnes/ha)')
     
-    # Scatter plot for the relationship between pesticide use and crop yields
-    sns.scatterplot(ax=axes[2], x='Pesticide Use (tonnes)', y='Crop Yield (hg/ha)', data=area_data)
-    axes[2].set_title(f'Relationship between Pesticide Use and Crop Yields in {area_name}')
-    axes[2].set_xlabel('Pesticide Use (tonnes)')
-    axes[2].set_ylabel('Crop Yield (hg/ha)')
+    # Scatter plot for the relationship between fertilizer use and crop yields
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.scatter(country_data['Nitrogen Fertilizer Use (kg/ha)'], country_data['Cereal Yield (tonnes/ha)'], label='Data points')
+    ax.set_title(f'Relationship between Fertilizer Use and Crop Yields in {country_name}')
+    ax.set_xlabel('Fertilizer Use (kg/ha)')
+    ax.set_ylabel('Crop Yield (tonnes/ha)')
     
     # Linear regression
-    X = area_data['Pesticide Use (tonnes)'].values.reshape(-1, 1)
-    Y = area_data['Crop Yield (hg/ha)'].values.reshape(-1, 1)
+    X = country_data['Nitrogen Fertilizer Use (kg/ha)'].values.reshape(-1, 1)
+    Y = country_data['Cereal Yield (tonnes/ha)'].values.reshape(-1, 1)
     reg = LinearRegression().fit(X, Y)
     Y_pred = reg.predict(X)
     
-    axes[2].plot(X, Y_pred, color='red', linewidth=2, label='Linear regression')
-    axes[2].legend()
+    ax.plot(X, Y_pred, color='red', linewidth=2, label='Linear regression')
+    ax.legend()
     
-    st.pyplot(fig)
+    plt.show()
 
-def main():
-    st.subheader('Pesticide Use vs. Crop Yield Analysis')
-    st.subheader('Select an Area (Country)')
+# Load the dataset
+data = pd.read_csv('cleaned_fertilizer_data.csv')
 
-    # Country selection
-    area_name = st.selectbox('Choose an area (country)', data['Area'].unique())
+# Prompt the user to enter a country name
+country_name = input("Enter the name of the country to display the graph: ")
+plot_fertilizer_data(country_name, data)
 
-    if st.button('Show Analysis'):
-        plot_pesticide_data(area_name, data)
-
-if __name__ == '__main__':
-    main()
 
 #Question 4
 
