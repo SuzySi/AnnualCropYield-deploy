@@ -100,6 +100,7 @@ if __name__ == '__main__':
     
 
 q2cleaned_data = pd.read_csv('Q2merged_rf_temp_crop data.csv')
+
 def crop_temp_scatter(country_name, selected_crop):
     country_data = q2cleaned_data[q2cleaned_data['Name'] == country_name]
     crop_data = country_data[country_data['Item'] == selected_crop]
@@ -110,12 +111,20 @@ def crop_temp_scatter(country_name, selected_crop):
     sns.regplot(x='Temperature', y='Crop Yield', data=crop_data, scatter=False, ax=ct_s)
     st.pyplot(plt)  # Display the plot in Streamlit
 
+def crop_rf_scatter(country_name, selected_crop):
+    country_data = q2cleaned_data[q2cleaned_data['Name'] == country_name]
+    crop_data = country_data[country_data['Item'] == selected_crop]
+    crf_s = sns.scatterplot(x='Precipitation', y='Crop Yield', data=crop_data)
+    crf_s.set_title(f'Precipitation VS {selected_crop} Yield in {country_name}')
+    sns.regplot(x='Precipitation', y='Crop Yield', data=crop_data, scatter=False, ax=crf_s)
+    st.pyplot(plt)
+
 def main():
-    st.title('Temperature vs. Crop Yield Scatter Plot')
+    st.title('Crop Yield Analysis')
     st.subheader('Select a Country')
 
     # Country selection
-    country_name = st.selectbox('Choose a country', q2cleaned_data['Name'].unique(), key="c_select")
+    country_name = st.selectbox('Choose a country', q2cleaned_data['Name'].unique(), key="country_select")
 
     # Get available crops for the selected country
     if country_name:
@@ -125,42 +134,17 @@ def main():
         st.write(f"Available crop types in {country_name}:")
         selected_crop = st.selectbox('Choose a crop', crop_available, key="crop_select")
 
-        if st.button('Show Scatter Plot',key="show_scatter1"):
-            crop_temp_scatter(country_name, selected_crop)
+        st.subheader('Select a Scatter Plot Type')
+        plot_type = st.selectbox('Choose a plot type', ['Temperature vs. Crop Yield', 'Precipitation vs. Crop Yield'])
+
+        if st.button('Show Scatter Plot'):
+            if plot_type == 'Temperature vs. Crop Yield':
+                crop_temp_scatter(country_name, selected_crop)
+            elif plot_type == 'Precipitation vs. Crop Yield':
+                crop_rf_scatter(country_name, selected_crop)
 
 if __name__ == '__main__':
     main()
-
-def crop_rf_scatter(country_name):
-    country_data = q2cleaned_data[q2cleaned_data['Name'] == country_name]
-    crop_available = country_data['Item'].unique()
-    
-    selected_crop = st.selectbox('Select crop type', crop_available)
-    
-    crop_data = country_data[country_data['Item'] == selected_crop]
-    crf_s = sns.scatterplot(x='Precipitation', y='Crop Yield', data=crop_data)
-    crf_s.set_title(f'Precipitation VS {selected_crop} Yield in {country_name}')
-    sns.regplot(x='Precipitation', y='Crop Yield', data=crop_data, scatter=False, ax=crf_s)
-    st.pyplot(plt)
-
-def main():
-    st.title('Precipitation vs. Crop Yield Scatter Plot')
-    st.subheader('Select a Country')
-
-    # Country selection
-    country_name = st.selectbox('Choose a country', q2cleaned_data['Name'].unique(), key="ct_select")
-
-    # Get available crops for the selected country
-    if country_name:
-        country_data = q2cleaned_data[q2cleaned_data['Name'] == country_name]
-        crop_available = country_data['Item'].unique()
-
-        st.write(f"Available crop types in {country_name}:")
-        selected_crop = st.selectbox('Choose a crop', crop_available, key="crp_select")
-
-        if st.button('Show Scatter Plot',key="show_scatter2"):
-            crop_rf_scatter(country_name, selected_crop)
-
     
 #Question 3
 st.subheader('Question 3')
