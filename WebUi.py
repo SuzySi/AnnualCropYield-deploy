@@ -317,10 +317,21 @@ climate_zone_mapping = {0: 'A-tropical', 1: 'B-arid', 2: 'C-temperate', 3: 'D-co
 climate_zone_reverse_mapping = {v: k for k, v in climate_zone_mapping.items()}
 
 st.subheader('Input Parameters for Prediction')
+rf_model = train_random_forest(X, y)
 
 # User input for prediction
+crops = {
+    'Pulses': 'pulses_yield',
+    'Maize': 'maize_yield',
+    'Sugar Crops': 'sugar_crops_yield',
+    'Tobacco': 'tobacco_yield',
+    'Rice': 'rice_yield',
+    'Wheat': 'wheat_yield'
+}
 selected_climate_zone = st.selectbox('Choose a climate zone', list(climate_zone_reverse_mapping.keys()))
 climate_zone_encoded = climate_zone_reverse_mapping[selected_climate_zone]
+selected_crop_name = st.selectbox('Choose a crop for prediction', list(crops.keys()))
+crop_yield_column = crops[selected_crop_name]
 
 precipitation = st.number_input('Enter Precipitation (mm)', min_value=0.0)
 temperature = st.number_input('Enter Surface Air Temperature (°C)', min_value=-50.0, max_value=50.0)
