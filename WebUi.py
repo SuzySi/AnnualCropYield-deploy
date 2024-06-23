@@ -447,134 +447,9 @@ if __name__ == '__main__':
 
 #Question 4
 
-# Load the cleaned data
-merged_cleaned_data = pd.read_csv('merged_cleaned_data.csv')
-
-# Data preprocessing: Encode the categorical 'Main Climate Zone'
-encoder = LabelEncoder()
-merged_cleaned_data['Main Climate Zone'] = encoder.fit_transform(merged_cleaned_data['Main Climate Zone'])
-
-# Function to train and visualize linear regression
-def train_linear_regression(X_train, y_train, X_test, y_test, df, crop_name, crop_yield):
-    lr_model = LinearRegression()
-    lr_model.fit(X_train, y_train)
-    coef_lr = lr_model.coef_
-    intercept_lr = lr_model.intercept_
-    equation = f'{crop_name}_yield = {intercept_lr:.2f}'
-    feature_names = X_train.columns
-    for coef, feature in zip(coef_lr, feature_names):
-        equation += f' + ({coef:.2f} * {feature})'
-    st.write(f'Linear Regression Equation for {crop_name}: {equation}')
-    y_pred_lr = lr_model.predict(X_test)
-    mse_lr = mean_squared_error(y_test, y_pred_lr)
-    mae_lr = mean_absolute_error(y_test, y_pred_lr)
-    r2_lr = r2_score(y_test, y_pred_lr)
-    st.write(f'Linear Regression - MSE: {mse_lr}, MAE: {mae_lr}, R²: {r2_lr}')
-    features = ['Surface Air Temperature(°C)', 'Precipitation(mm)', 'Main Climate Zone', 'Pesticide Used(tn)']
-    fig, axes = plt.subplots(nrows=len(features), ncols=1, figsize=(10, 20))
-    for i, feature in enumerate(features):
-        sns.regplot(x=feature, y=crop_yield, data=df, scatter_kws={"color": "blue"}, line_kws={"color": "red"}, ax=axes[i])
-        axes[i].set_title(f'{crop_name.capitalize()} Yield vs {feature}')
-    plt.tight_layout()
-    st.pyplot(fig)
-    return lr_model, mse_lr, mae_lr, r2_lr
-
-# Function to train and evaluate Random Forest
-def train_random_forest(X_train, y_train, X_test, y_test):
-    rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
-    rf_model.fit(X_train, y_train)
-    y_pred_rf = rf_model.predict(X_test)
-    mse_rf = mean_squared_error(y_test, y_pred_rf)
-    mae_rf = mean_absolute_error(y_test, y_pred_rf)
-    r2_rf = r2_score(y_test, y_pred_rf)
-    st.write(f'Random Forest - MSE: {mse_rf}, MAE: {mae_rf}, R²: {r2_rf}')
-    return rf_model, mse_rf, mae_rf, r2_rf
-
-# Function to train and evaluate Polynomial Regression
-def train_polynomial_regression(X_train, y_train, X_test, y_test, X, crop_name):
-    mae_scores = []
-    for deg in range(2, 10):
-        poly_deg = PolynomialFeatures(degree=deg)
-        X_train_poly = poly_deg.fit_transform(X_train)
-        X_test_poly = poly_deg.transform(X_test)
-        poly_model = LinearRegression()
-        poly_model.fit(X_train_poly, y_train)
-        y_pred_poly = poly_model.predict(X_test_poly)
-        poly_mae = mean_absolute_error(y_test, y_pred_poly)
-        mae_scores.append(poly_mae)
-    poly_deg = np.arange(2, 10)
-    plt.figure(figsize=(10, 6))
-    plt.plot(poly_deg, mae_scores, marker='o', linestyle='-', color='b')
-    plt.xlabel('Degree of Polynomial')
-    plt.ylabel('Mean Absolute Error (MAE)')
-    plt.title('Degree of Polynomial vs. MAE')
-    plt.grid(True)
-    st.pyplot(plt)
-    optimal_poly_deg = poly_deg[np.argmin(mae_scores)]
-    st.write(f'Optimal degree of polynomial for {crop_name}: {optimal_poly_deg}')
-    poly_deg = PolynomialFeatures(degree=optimal_poly_deg)
-    X_train_poly = poly_deg.fit_transform(X_train)
-    X_test_poly = poly_deg.transform(X_test)
-    poly_model = LinearRegression()
-    poly_model.fit(X_train_poly, y_train)
-    coef_poly = poly_model.coef_
-    intercept_poly = poly_model.intercept_
-    feature_names = X.columns
-    equation = f'{crop_name}_yield = {intercept_poly:.2f}'
-    for coef, feature in zip(coef_poly[1:], feature_names):
-        equation += f' + ({coef:.2f} * {feature})'
-    st.write(f'Polynomial Regression Equation for {crop_name}: {equation}')
-    y_pred_poly = poly_model.predict(X_test_poly)
-    mse_poly = mean_squared_error(y_test, y_pred_poly)
-    mae_poly = mean_absolute_error(y_test, y_pred_poly)
-    r2_poly = r2_score(y_test, y_pred_poly)
-    st.write(f'Polynomial Regression - MSE: {mse_poly}, MAE: {mae_poly}, R²: {r2_poly}')
-    return poly_model, mse_poly, mae_poly, r2_poly
-
-# Function to train and evaluate Gradient Boosting
-def train_gradient_boosting(X_train, y_train, X_test, y_test):
-    gb_model = GradientBoostingRegressor(n_estimators=100, random_state=42)
-    gb_model.fit(X_train, y_train)
-    y_pred_gb = gb_model.predict(X_test)
-    mse_gb = mean_squared_error(y_test, y_pred_gb)
-    mae_gb = mean_absolute_error(y_test, y_pred_gb)
-    r2_gb = r2_score(y_test, y_pred_gb)
-    st.write(f'Gradient Boosting - MSE: {mse_gb}, MAE: {mae_gb}, R²: {r2_gb}')
-    return gb_model, mse_gb, mae_gb, r2_gb
-
-# Function to train and evaluate Decision Tree
-def train_decision_tree(X_train, y_train, X_test, y_test, crop_name):
-    mae_scores = []
-    for md in range(1, 21):
-        dtr = DecisionTreeRegressor(max_depth=md)
-        dtr.fit(X_train, y_train)
-        y_pred_dtr = dtr.predict(X_test)
-        dtr_mae = mean_absolute_error(y_test, y_pred_dtr)
-        mae_scores.append(dtr_mae)
-    max_depths = np.arange(1, 21)
-    plt.figure(figsize=(8, 5))
-    plt.plot(max_depths, mae_scores, marker='o', linestyle='-', color='b')
-    plt.xlabel('Max Depth')
-    plt.ylabel('Mean Absolute Error (MAE)')
-    plt.title(f'{crop_name.capitalize()} Decision Tree Max Depth vs. MAE')
-    plt.grid(True)
-    st.pyplot(plt)
-    optimal_max_depth = max_depths[np.argmin(mae_scores)]
-    st.write(f'Optimal max depth for {crop_name} Decision Tree: {optimal_max_depth}')
-    dtr_model = DecisionTreeRegressor(max_depth=optimal_max_depth)
-    dtr_model.fit(X_train, y_train)
-    y_pred_dtr = dtr_model.predict(X_test)
-    mse_dtr = mean_squared_error(y_test, y_pred_dtr)
-    mae_dtr = mean_absolute_error(y_test, y_pred_dtr)
-    r2_dtr = r2_score(y_test, y_pred_dtr)
-    st.write(f'Decision Tree - MSE: {mse_dtr}, MAE: {mae_dtr}, R²: {r2_dtr}')
-    return dtr_model, mse_dtr, mae_dtr, r2_dtr
-
 def main():
-    st.subheader('Question 4: Predict Future Crop Yields')
-    st.markdown('Predict future crop yields based on current and historical data on pesticide use, temperature, and precipitation.')
-
-    # Crop selection for modeling
+    encoder = LabelEncoder()
+     # Crop selection for modeling
     crops = {
         'Pulses': 'pulses_yield',
         'Maize': 'maize_yield',
@@ -583,43 +458,24 @@ def main():
         'Rice': 'rice_yield',
         'Wheat': 'wheat_yield'
     }
-    
     selected_crop_name = st.selectbox('Choose a crop for modeling', list(crops.keys()))
-    crop_yield_column = crops[selected_crop_name]
+    #crop_yield_column = crops[selected_crop_name]
 
-    # Filter data for the selected crop
-    model_df = merged_cleaned_data[['Main Climate Zone', 'Pesticide Used(tn)', 
-                                    'Surface Air Temperature(°C)', 'Precipitation(mm)', 
-                                    crop_yield_column]].dropna(subset=[crop_yield_column])
-    
-    X = model_df.drop(crop_yield_column, axis=1)
-    y = model_df[crop_yield_column]
 
-    # Train-test split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+    # Get a list of all joblib files in the models folder
+    models_folder = 'models'
+    model_files = [f for f in os.listdir(models_folder) if f.endswith('.joblib')]
 
-    # Model selection for training
-    model_options = ['Linear Regression', 'Random Forest', 'Polynomial Regression', 'Gradient Boosting', 'Decision Tree']
-    selected_model = st.selectbox('Choose a model to train', model_options)
+    # Add a selectbox to choose the model
+    st.subheader('Select a Trained Model')
+    selected_model_file = st.selectbox('Choose a model', model_files)
 
-    # Initialize rf_model
-    rf_model = None
+    # Load the selected model from joblib file
+    model_file_path = os.path.join(models_folder, selected_model_file)
+    loaded_model = joblib.load(model_file_path)
 
-    if st.button('Train Model',key="show_train"):
-        if selected_model == 'Linear Regression':
-            train_linear_regression(X_train, y_train, X_test, y_test, model_df, selected_crop_name, crop_yield_column)
-        elif selected_model == 'Random Forest':
-            rf_model, _, _, _, = train_random_forest(X_train, y_train, X_test, y_test)
-            st.session_state.rf_model = rf_model  # Store in session state
-        elif selected_model == 'Polynomial Regression':
-            train_polynomial_regression(X_train, y_train, X_test, y_test, X, selected_crop_name)
-        elif selected_model == 'Gradient Boosting':
-            train_gradient_boosting(X_train, y_train, X_test, y_test)
-        elif selected_model == 'Decision Tree':
-            train_decision_tree(X_train, y_train, X_test, y_test, selected_crop_name)
-
-    # Add section for user input and prediction using Random Forest
-    st.subheader('Predict Future Yield Using Random Forest')
+    # Add section for user input and prediction using loaded model
+    st.subheader('Predict Future Yield Using Loaded Model')
     crop_type = st.selectbox('Select Crop Type', list(crops.keys()))
     climate_zone = st.selectbox('Select Main Climate Zone', encoder.classes_.tolist())
     climate_zone_encoded = encoder.transform([climate_zone])[0]
@@ -628,12 +484,9 @@ def main():
     precipitation = st.number_input('Precipitation (mm)', value=50.0)
 
     if st.button('Predict Future Yield',key="show_model"):
-        if 'rf_model' in st.session_state:
-            user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
-            predicted_yield = st.session_state.rf_model.predict(user_input)
-            st.write(f'The predicted yield for {selected_crop_name} is: {predicted_yield[0]:.2f} hg/ha')
-        else:
-            st.write('Please train the Random Forest model first.')
+        user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
+        predicted_yield = loaded_model.predict(user_input)
+        st.write(f'The predicted yield for {selected_crop_name} is: {predicted_yield[0]:.2f} hg/ha')
 
 if __name__ == '__main__':
     main()
