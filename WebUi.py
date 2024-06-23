@@ -123,7 +123,7 @@ def crop_rf_scatter(country_name, selected_crop):
     st.pyplot(plt)  # Display the plot in Streamlit
 
 def main():
-    st.title('Crop Yield Scatter Plots')
+    st.subheader('Crop Yield Scatter Plots')
     
     # Temperature vs. Crop Yield Section
     st.subheader('Temperature vs. Crop Yield Scatter Plot')
