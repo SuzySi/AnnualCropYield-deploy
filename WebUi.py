@@ -309,17 +309,13 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
-# Data preprocessing: Encode the categorical 'Main Climate Zone'
+
+#User input for prediction
+#Encode the categorical 'Main Climate Zone'
 encoder = LabelEncoder()
 merged_cleaned_data['Main Climate Zone'] = encoder.fit_transform(merged_cleaned_data['Main Climate Zone'])
-climate_zone_mapping = {0: 'A-tropical', 1: 'B-arid', 2: 'C-temperate', 3: 'D-continental'}
-climate_zone_reverse_mapping = {v: k for k, v in climate_zone_mapping.items()}
 
-st.subheader('Input Parameters for Prediction')
-rf_model = train_random_forest(X, y)
-
-# User input for prediction
+# Crop selection for modeling
 crops = {
     'Pulses': 'pulses_yield',
     'Maize': 'maize_yield',
@@ -328,17 +324,39 @@ crops = {
     'Rice': 'rice_yield',
     'Wheat': 'wheat_yield'
 }
-selected_climate_zone = st.selectbox('Choose a climate zone', list(climate_zone_reverse_mapping.keys()))
-climate_zone_encoded = climate_zone_reverse_mapping[selected_climate_zone]
+
 selected_crop_name = st.selectbox('Choose a crop for prediction', list(crops.keys()))
 crop_yield_column = crops[selected_crop_name]
+
+# Filter data for the selected crop
+model_df = merged_cleaned_data[['Main Climate Zone', 'Pesticide Used(tn)', 
+                                'Surface Air Temperature(°C)', 'Precipitation(mm)', 
+                                crop_yield_column]].dropna(subset=[crop_yield_column])
+
+X = model_df.drop(crop_yield_column, axis=1)
+y = model_df[crop_yield_column]
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+
+# Train the Random Forest model
+rf_model = train_random_forest(X_train, y_train, X_test, y_test)
+
+# User inputs for prediction
+st.subheader('Enter the input values for prediction')
+climate_zones = {'A-tropical': 0, 'B-arid': 1, 'C-temperate': 2, 'D-continental': 3}
+selected_climate_zone = st.selectbox('Choose Climate Zone', list(climate_zones.keys()))
+climate_zone_encoded = climate_zones[selected_climate_zone]
 
 precipitation = st.number_input('Enter Precipitation (mm)', min_value=0.0)
 temperature = st.number_input('Enter Surface Air Temperature (°C)', min_value=-50.0, max_value=50.0)
 pesticide_use = st.number_input('Enter Pesticide Used (tn)', min_value=0.0)
 
-input_data = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
+# Predict yield based on user inputs
+user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
+predicted_yield = rf_model.predict(user_input)
+st.subheader('Predicted Yield')
+st.write(f'The predicted yield for {selected_crop_name} is {predicted_yield[0]:.2f}')
 
-if st.button('Predict Crop Yield'):
-    predicted_yield = rf_model.predict(input_data)
-    st.write(f'Predicted yield for {selected_crop_name}: {predicted_yield[0]:.2f}')
+if __name__ == '__main__':
+    main()
