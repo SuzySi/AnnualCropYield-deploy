@@ -63,13 +63,13 @@ st.pyplot(plt)
 st.subheader('Bar Plot of Average Crop Yield for a Specific Year')
 
 # Add a multiselect widget for selecting countries
-selected_countries = st.multiselect('Select countries', cleaned_data.index.tolist(), default=['United States of America', 'China', 'India', 'Brazil', 'Australia'])
+selected_country = st.multiselect('Select countries', cleaned_data.index.tolist(), default=['United States of America', 'China', 'India', 'Brazil', 'Australia'])
 
 year = st.selectbox('Select year', cleaned_data.columns.tolist(), index=cleaned_data.columns.tolist().index('2016'))
 
 if year:
     # Filter data for selected countries
-    data_for_year = cleaned_data.loc[selected_countries, year].dropna().sort_values(ascending=False).head(10)
+    data_for_year = cleaned_data.loc[selected_country, year].dropna().sort_values(ascending=False).head(10)
 
     plt.figure(figsize=(14, 7))
     sns.barplot(x=data_for_year.values, y=data_for_year.index, palette='viridis')
