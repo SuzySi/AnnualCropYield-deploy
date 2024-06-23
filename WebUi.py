@@ -330,7 +330,7 @@ def main():
     # Initialize rf_model
     rf_model = None
 
-    if st.button('Train Model'):
+    if st.button('Train Model',key="show_train"):
         if selected_model == 'Linear Regression':
             train_linear_regression(X_train, y_train, X_test, y_test, model_df, selected_crop_name, crop_yield_column)
         elif selected_model == 'Random Forest':
@@ -352,7 +352,7 @@ def main():
     temperature = st.number_input('Surface Air Temperature (°C)', value=20.0)
     precipitation = st.number_input('Precipitation (mm)', value=50.0)
 
-    if st.button('Predict Future Yield'):
+    if st.button('Predict Future Yield',key="show_model"):
         if 'rf_model' in st.session_state:
             user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
             predicted_yield = st.session_state.rf_model.predict(user_input)
