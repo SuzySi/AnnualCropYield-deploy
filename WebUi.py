@@ -90,3 +90,7 @@ def main():
 if __name__ == '__main__':
     main()
     
+#Question 3
+st.subheader('Question 3')
+st.markdown('Does an increase in pesticide use cause an increase in crop yields, and does this causal relationship differ by country? ')
+
