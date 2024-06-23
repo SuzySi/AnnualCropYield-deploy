@@ -57,10 +57,10 @@ if year:
     st.pyplot(plt)
 
 #Question 2
-filtered_rf = pd.read_csv('Q2merged_rf_temp_crop data.csv')
+filtered_rftemp = pd.read_csv('Q2merged_rf_temp_crop data.csv')
 
 def climate_trend(country_name, trend_type):
-    country_data = filtered_rf[filtered_rf['Name'] == country_name]
+    country_data = filtered_rftemp[filtered_rftemp['Name'] == country_name]
 
     plt.figure(figsize=(10, 6))
     if trend_type == 'Precipitation':
@@ -79,7 +79,7 @@ def main():
     st.title('Climate Trends Visualization')
     st.subheader('Question 2')
 
-    country_name = st.selectbox('Choose a country', filtered_rf['Name'].unique())
+    country_name = st.selectbox('Choose a country', filtered_rftemp['Name'].unique())
     trend_type = st.radio('Select trend type:', ['Precipitation', 'Temperature'])
 
     if st.button(f'Show {trend_type} Trend'):
@@ -87,3 +87,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+#merged_data = filtered_cy.merge(filtered_rftemp, on = ['Name', 'Year'])
+#merged_data = merged_data.merge(filtered_rftemp, on = ['Name', 'Year'])
