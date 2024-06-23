@@ -4,10 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+st.title*('Analysis of Crop Yield of Different Countries from Year 1990 to Year 2016 ')
+st.text('Crop yields contribute to an adequate food supply, reducing hunger, and improving farmers incomes, which in turn supports national economies. With climate change posing significant challenges, analysing and predicting crop yields helps develop resilient agricultural practices. Analysis on the influence of environmental factors and pesticide use influence on various crop yield across different countries over time is vital ')
 
+st.subheader('Question 1')
 # Load the cleaned pivot table CSV file into a DataFrame
 cleaned_data = pd.read_csv('cleaned_average_annual_crop_yield.csv', index_col='Country')
-st.title('Average Annual Crop Yield from Year 1990 to 2016')
+st.subheader('Average Annual Crop Yield from Year 1990 to 2016')
 
 country = st.selectbox('Select Country', cleaned_data.index.tolist())
 year = st.selectbox('Select Year', cleaned_data.columns.tolist())
