@@ -435,7 +435,7 @@ def plot_average(data, predictions):
     st.pyplot(plt)  # Display the plot in Streamlit
 
 def main():
-    st.subhearder('Fertilizer Data Analysis')
+    st.subheader('Fertilizer Data Analysis')
     st.subheader('Relationship between Average Nitrogen Use by Country and Mean Crop Yields for All Countries')
 
     if st.button('Show Graph',key="q3_grp"):
