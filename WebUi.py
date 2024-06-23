@@ -301,7 +301,7 @@ def main():
         if selected_model == 'Linear Regression':
             train_linear_regression(X_train, y_train, X_test, y_test, model_df, selected_crop_name, crop_yield_column)
         elif selected_model == 'Random Forest':
-            rf_model = train_random_forest(X_train, y_train, X_test, y_test)
+            rf_model, _, _, _, = train_random_forest(X_train, y_train, X_test, y_test)
             st.session_state.rf_model = rf_model  # Store in session state
         elif selected_model == 'Polynomial Regression':
             train_polynomial_regression(X_train, y_train, X_test, y_test, X, selected_crop_name)
