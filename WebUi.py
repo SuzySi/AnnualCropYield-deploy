@@ -207,6 +207,61 @@ def main():
 if __name__ == '__main__':
     main()
 
+# Load the dataset
+fertilizer_data = pd.read_csv('cleaned_pesticide_data.csv')
+
+# Calculate mean values for each country
+def calculate_mean_values(data):
+    countries = data['Area'].unique()
+    mean_values = []
+    for country in countries:
+        country_data = data[data['Area'] == country]
+       
+        mean_pesticide_use = country_data['Pesticide Use (tonnes)'].mean()
+        mean_crop_yield = country_data['Crop Yield (hg/ha)'].mean()
+        mean_values.append({
+            'Country': country,
+            'Mean Pesticide Use (tonnes)': mean_pesticide_use,
+            'Mean Crop Yield (hg/ha)': mean_crop_yield
+        })
+    mean_data = pd.DataFrame(mean_values)
+    return mean_data
+
+mean_fertilizer_data = calculate_mean_values(fertilizer_data)
+
+# Fit linear regression
+X = mean_fertilizer_data[['Mean Pesticide Use (tonnes)']]
+y = mean_fertilizer_data['Mean Crop Yield (hg/ha)']
+model = LinearRegression()
+model.fit(X, y)
+regression_line = model.predict(X)
+
+# Function to plot the graph with linear regression line
+def plot_average(data, regression_line):
+    plt.figure(figsize=(12, 8))
+    
+    # Scatter plot
+    plt.scatter(data['Mean Pesticide Use (tonnes)'], data['Mean Crop Yield (hg/ha)'], alpha=0.7, label='Data Points')
+    
+    # Regression line
+    plt.plot(data['Mean Pesticide Use (tonnes)'], regression_line, color='red', label='Regression Line')
+    
+    plt.title('Relationship between Average Pesticide Use by Country and Mean Crop Yield')
+    plt.xlabel('Average Pesticide Use (tonnes)')
+    plt.ylabel('Mean Crop Yield (hg/ha)')
+    plt.legend()
+    plt.grid(True)
+    st.pyplot(plt)  # Display the plot in Streamlit
+
+def main():
+    st.title('Pesticide Data Analysis')
+    st.subheader('Relationship between Average Pesticide Use by Country and Mean Crop Yield')
+
+    if st.button('Show Graph',key="pest_country_mean"):
+        plot_average(mean_fertilizer_data, regression_line)
+
+if __name__ == '__main__':
+    main()
 
 #Question 4
 
