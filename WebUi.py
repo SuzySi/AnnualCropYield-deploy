@@ -381,6 +381,69 @@ def main():
 if __name__ == '__main__':
     main()
 
+# Load the datasets
+fertilizer_data = pd.read_csv('cleaned_fertilizer_data.csv')
+
+# Calculate mean values for each country 
+def calculate_mean_values(data):
+    countries = data['Country'].unique()
+    mean_values = []
+    for country in countries:
+        country_data = data[data['Country'] == country]
+       
+        mean_fertilizer_use = country_data['Nitrogen Fertilizer Use (kg/ha)'].mean()
+        mean_crop_yield = country_data['Cereal Yield (tonnes/ha)'].mean()
+        mean_values.append({
+            'Country': country,
+            'Mean Fertilizer Use (tonnes)': mean_fertilizer_use,
+            'Mean Crop Yield (tonnes/ha)': mean_crop_yield
+        })
+    mean_data = pd.DataFrame(mean_values)
+    return mean_data
+
+mean_fertilizer_data = calculate_mean_values(fertilizer_data)
+
+# Perform linear regression
+X = mean_fertilizer_data[['Mean Fertilizer Use (tonnes)']]
+y = mean_fertilizer_data['Mean Crop Yield (tonnes/ha)']
+
+linear_regressor = LinearRegression()
+linear_regressor.fit(X, y)
+
+# Predictions for the regression line
+y_pred = linear_regressor.predict(X)
+
+# Function to plot the graph 
+def plot_average(data, predictions):
+    plt.figure(figsize=(12, 8))
+    
+    # Scatter plot 
+    plt.scatter(data['Mean Fertilizer Use (tonnes)'], data['Mean Crop Yield (tonnes/ha)'], alpha=0.7, label='Data Points')
+    
+    # Regression line
+    plt.plot(data['Mean Fertilizer Use (tonnes)'], predictions, color='red', linewidth=2, label='Regression Line')
+    
+    # Adding labels for each country
+    #for i, row in data.iterrows():
+        #plt.text(row['Mean Fertilizer Use (tonnes)'], row['Mean Crop Yield (tonnes/ha)'], row['Country'], fontsize=9)
+    
+    plt.title('Relationship between Average Nitrogen Use by Country and Mean Crop Yields for All Countries')
+    plt.xlabel('Average Nitrogen Fertilizer Use (kg/ha)')
+    plt.ylabel('Mean Crop Yield (tonnes/ha)')
+    plt.legend()
+    plt.grid(True)
+    st.pyplot(plt)  # Display the plot in Streamlit
+
+def main():
+    st.subhearder('Fertilizer Data Analysis')
+    st.subheader('Relationship between Average Nitrogen Use by Country and Mean Crop Yields for All Countries')
+
+    if st.button('Show Graph',key="q3_grp"):
+        plot_average(mean_fertilizer_data, y_pred)
+
+if __name__ == '__main__':
+    main()
+
 #Question 4
 
 # Load the cleaned data
