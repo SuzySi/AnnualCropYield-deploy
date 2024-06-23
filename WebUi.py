@@ -29,7 +29,7 @@ if country and year:
 #st.pyplot(plt)
 
 # Line Plot
-st.subheader('Line Plot of Average Annual Crop Yield for Selected Countries')
+st.subheader('Line Plot of Average Annual Crop Yield for Selected Countries from Year 1990 to Year 2016')
 
 selected_countries = st.multiselect('Select countries', cleaned_data.index.tolist(), default=['United States of America', 'China', 'India', 'Brazil', 'Australia'])
 
@@ -70,7 +70,7 @@ if year:
 
     plt.figure(figsize=(14, 7))
     sns.barplot(x=data_for_year.values, y=data_for_year.index, palette='viridis')
-    plt.xlabel('Average Yield')
+    plt.xlabel('Average Yield (hg/ha)')
     plt.ylabel('Country')
     plt.title(f'Average Crop Yield in {year} for Selected Countries')
     st.pyplot(plt)
