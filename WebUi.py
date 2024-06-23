@@ -97,11 +97,8 @@ def crop_temp_scatter(country_name):
     crop_available = country_data['Item'].unique()
 
     st.write(f"Available crop types in {country_name}:")
-    for i, crop in enumerate(crop_available, 8):
-        st.write(f"{i}. {crop}")
+    selected_crop = st.selectbox('Choose a crop', crop_available)
 
-    choice = st.number_input("Enter the number of the crop to compare:", min_value=1, max_value=len(crop_available), value=1, key="crop_choice") - 1
-    selected_crop = crop_available[choice]
     crop_data = country_data[country_data['Item'] == selected_crop]
 
     plt.figure(figsize=(10, 6))
