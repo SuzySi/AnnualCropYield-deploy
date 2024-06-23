@@ -280,7 +280,7 @@ def main():
     crop_yield_column = crops[selected_crop_name]
 
     # Filter data for the selected crop
-    model_df = merged_cleaned_data[['Main Climate Zone','Pesticide Used(tn)', 
+    model_df = merged_cleaned_data[['Main Climate Zone', 'Pesticide Used(tn)', 
                                     'Surface Air Temperature(°C)', 'Precipitation(mm)', 
                                     crop_yield_column]].dropna(subset=[crop_yield_column])
     
@@ -294,11 +294,12 @@ def main():
     model_options = ['Linear Regression', 'Random Forest', 'Polynomial Regression', 'Gradient Boosting', 'Decision Tree']
     selected_model = st.selectbox('Choose a model to train', model_options)
 
+    rf_model = None
     if st.button('Train Model'):
         if selected_model == 'Linear Regression':
             train_linear_regression(X_train, y_train, X_test, y_test, model_df, selected_crop_name, crop_yield_column)
         elif selected_model == 'Random Forest':
-            train_random_forest(X_train, y_train, X_test, y_test)
+            rf_model = train_random_forest(X_train, y_train, X_test, y_test)
         elif selected_model == 'Polynomial Regression':
             train_polynomial_regression(X_train, y_train, X_test, y_test, X, selected_crop_name)
         elif selected_model == 'Gradient Boosting':
@@ -306,69 +307,21 @@ def main():
         elif selected_model == 'Decision Tree':
             train_decision_tree(X_train, y_train, X_test, y_test, selected_crop_name)
 
+    # Add section for user input and prediction using Random Forest
+    st.subheader('Predict Future Yield Using Random Forest')
+    climate_zone = st.selectbox('Select Main Climate Zone', encoder.classes_.tolist())
+    climate_zone_encoded = encoder.transform([climate_zone])[0]
+    pesticide_use = st.number_input('Pesticide Used (tn)', value=100.0)
+    temperature = st.number_input('Surface Air Temperature (°C)', value=20.0)
+    precipitation = st.number_input('Precipitation (mm)', value=50.0)
+
+    if st.button('Predict Future Yield'):
+        if rf_model:
+            user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
+            predicted_yield = rf_model.predict(user_input)
+            st.write(f'The predicted yield for {selected_crop_name} is: {predicted_yield[0]:.2f} hg/ha')
+        else:
+            st.write('Please train the Random Forest model first.')
+
 if __name__ == '__main__':
     main()
-
-#User input for prediction
-# Data preprocessing: Encode the categorical 'Main Climate Zone'
-encoder = LabelEncoder()
-merged_cleaned_data['Main Climate Zone'] = encoder.fit_transform(merged_cleaned_data['Main Climate Zone'])
-
-# Function to train and evaluate Random Forest
-def train_random_forest(X_train, y_train, X_test, y_test):
-    rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
-    rf_model.fit(X_train, y_train)
-    y_pred_rf = rf_model.predict(X_test)
-    mse_rf = mean_squared_error(y_test, y_pred_rf)
-    mae_rf = mean_absolute_error(y_test, y_pred_rf)
-    r2_rf = r2_score(y_test, y_pred_rf)
-    st.write(f'Random Forest - MSE: {mse_rf}, MAE: {mae_rf}, R²: {r2_rf}')
-    return rf_model
-
-# Crop selection for modeling
-crops = {
-    'Pulses': 'pulses_yield',
-    'Maize': 'maize_yield',
-    'Sugar Crops': 'sugar_crops_yield',
-    'Tobacco': 'tobacco_yield',
-    'Rice': 'rice_yield',
-    'Wheat': 'wheat_yield'
-}
-
-selected_crop_name = st.selectbox('Choose a crop for prediction', list(crops.keys()))
-crop_yield_column = crops[selected_crop_name]
-
-# Filter data for the selected crop
-model_df = merged_cleaned_data[['Main Climate Zone', 'Pesticide Used(tn)', 
-                                'Surface Air Temperature(°C)', 'Precipitation(mm)', 
-                                crop_yield_column]].dropna(subset=[crop_yield_column])
-
-X = model_df.drop(crop_yield_column, axis=1)
-y = model_df[crop_yield_column]
-
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
-
-# Train the Random Forest model
-rf_model = train_random_forest(X_train, y_train, X_test, y_test)
-
-def predict_yield():
-    # User inputs for prediction
-    st.subheader('Enter the input values for prediction')
-    climate_zones = {'A-tropical': 0, 'B-arid': 1, 'C-temperate': 2, 'D-continental': 3}
-    selected_climate_zone = st.selectbox('Choose Climate Zone', list(climate_zones.keys()))
-    climate_zone_encoded = climate_zones[selected_climate_zone]
-
-    precipitation = st.number_input('Enter Precipitation (mm)', min_value=0.0)
-    temperature = st.number_input('Enter Surface Air Temperature (°C)', min_value=-50.0, max_value=50.0)
-    pesticide_use = st.number_input('Enter Pesticide Used (tn)', min_value=0.0)
-
-    # Predict yield based on user inputs
-    user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
-    predicted_yield = rf_model.predict(user_input)
-    st.subheader('Predicted Yield')
-    st.write(f'The predicted yield for {selected_crop_name} is {predicted_yield[0]:.2f}')
-
-if __name__ == '__main__':
-    rf_model = main()
-    predict_yield()
