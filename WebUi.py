@@ -115,7 +115,7 @@ def main():
     st.subheader('Select a Country')
 
     # Country selection
-    country_name = st.selectbox('Choose a country', q2cleaned_data['Name'].unique(), key="country_select")
+    country_name = st.selectbox('Choose a country', q2cleaned_data['Name'].unique(), key="c_select")
 
     # Get available crops for the selected country
     if country_name:
@@ -148,7 +148,7 @@ def main():
     st.subheader('Select a Country')
 
     # Country selection
-    country_name = st.selectbox('Choose a country', q2cleaned_data['Name'].unique(), key="country_select")
+    country_name = st.selectbox('Choose a country', q2cleaned_data['Name'].unique(), key="ct_select")
 
     # Get available crops for the selected country
     if country_name:
