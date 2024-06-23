@@ -181,7 +181,7 @@ def train_random_forest(X_train, y_train, X_test, y_test):
     mae_rf = mean_absolute_error(y_test, y_pred_rf)
     r2_rf = r2_score(y_test, y_pred_rf)
     st.write(f'Random Forest - MSE: {mse_rf}, MAE: {mae_rf}, R²: {r2_rf}')
-    return rf_model, mse_rf, mae_rf, r2_rf
+    return rf_model
 
 # Function to train and evaluate Polynomial Regression
 def train_polynomial_regression(X_train, y_train, X_test, y_test, X, crop_name):
@@ -315,17 +315,6 @@ if __name__ == '__main__':
 encoder = LabelEncoder()
 merged_cleaned_data['Main Climate Zone'] = encoder.fit_transform(merged_cleaned_data['Main Climate Zone'])
 
-# Function to train and evaluate Random Forest
-def train_random_forest(X_train, y_train, X_test, y_test):
-    rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
-    rf_model.fit(X_train, y_train)
-    y_pred_rf = rf_model.predict(X_test)
-    mse_rf = mean_squared_error(y_test, y_pred_rf)
-    mae_rf = mean_absolute_error(y_test, y_pred_rf)
-    r2_rf = r2_score(y_test, y_pred_rf)
-    st.write(f'Random Forest - MSE: {mse_rf}, MAE: {mae_rf}, R²: {r2_rf}')
-    return rf_model
-
 # Crop selection for modeling
 crops = {
     'Pulses': 'pulses_yield',
@@ -365,9 +354,6 @@ pesticide_use = st.number_input('Enter Pesticide Used (tn)', min_value=0.0)
 
 # Predict yield based on user inputs
 user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
-predicted_yield = rf_model.predict(user_input)
+predicted_yield = rf_model.predict(user_input.reshape(1, -1))  # Ensure input shape matches expected format
 st.subheader('Predicted Yield')
 st.write(f'The predicted yield for {selected_crop_name} is {predicted_yield[0]:.2f}')
-
-if __name__ == '__main__':
-    main()
