@@ -56,6 +56,8 @@ if year:
     plt.title(f'Average Crop Yield in {year} for Selected Countries')
     st.pyplot(plt)
 
+#Question 2
+filtered_rf = pd.read_csv('Q2merged_rf_temp_crop data.csv')
 st.subheader('Question 2')
 def precipitation_trend(country_name):
     country_data = filtered_rf[filtered_rf['Name'] == country_name]
@@ -67,6 +69,7 @@ def precipitation_trend(country_name):
     plt.ylabel('Precipitation')
     st.pyplot(plt)  # Display the plot in Streamlit
 
+filtered_temp = pd.read_csv('Q2merged_rf_temp_crop data.csv')
 def temp_trend(country_name):
     country_data = filtered_temp[filtered_temp['Name'] == country_name]
 
