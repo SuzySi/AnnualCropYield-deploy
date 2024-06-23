@@ -134,9 +134,9 @@ if __name__ == '__main__':
 def crop_rf_scatter(country_name):
     country_data = q2cleaned_data[q2cleaned_data['Name'] == country_name]
     crop_available = country_data['Item'].unique()
-    
+
     selected_crop = st.selectbox('Select crop type', crop_available)
-    
+
     crop_data = country_data[country_data['Item'] == selected_crop]
     crf_s = sns.scatterplot(x='Precipitation', y='Crop Yield', data=crop_data)
     crf_s.set_title(f'Precipitation VS {selected_crop} Yield in {country_name}')
@@ -152,14 +152,8 @@ def main():
 
     # Get available crops for the selected country
     if country_name:
-        country_data = q2cleaned_data[q2cleaned_data['Name'] == country_name]
-        crop_available = country_data['Item'].unique()
-
-        st.write(f"Available crop types in {country_name}:")
-        selected_crop = st.selectbox('Choose a crop', crop_available, key="crp_select")
-
-        if st.button('Show Scatter Plot',key="show_scatter2"):
-            crop_rf_scatter(country_name, selected_crop)
+        if st.button('Show Scatter Plot', key="show_scatter2"):
+            crop_rf_scatter(country_name)
 
 if __name__ == '__main__':
     main()
