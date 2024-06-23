@@ -193,7 +193,7 @@ def plot_pesticide_data(area_name, data):
     st.pyplot(fig)
 
 def main():
-    st.title('Pesticide Use vs. Crop Yield Analysis')
+    st.subheader('Pesticide Use vs. Crop Yield Analysis')
     st.subheader('Select an Area (Country)')
 
     # Country selection
