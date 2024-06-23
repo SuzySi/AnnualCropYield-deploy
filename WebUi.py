@@ -316,9 +316,9 @@ def main():
     precipitation = st.number_input('Precipitation (mm)', value=50.0)
 
     if st.button('Predict Future Yield'):
-        if rf_model:
+        if 'rf_model' in st.session_state:
             user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
-            predicted_yield = rf_model.predict(user_input)
+            predicted_yield = st.session_state.rf_model.predict(user_input)
             st.write(f'The predicted yield for {selected_crop_name} is: {predicted_yield[0]:.2f} hg/ha')
         else:
             st.write('Please train the Random Forest model first.')
