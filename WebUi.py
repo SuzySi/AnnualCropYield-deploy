@@ -153,7 +153,55 @@ st.subheader('Question 3')
 st.markdown('Does an increase in pesticide use cause an increase in crop yields, and does this causal relationship differ by country? ')
 
 
+def plot_pesticide_data(area_name, data):
+    if area_name not in data['Area'].unique():
+        st.write(f"Area '{area_name}' not found in the dataset.")
+        return
+    
+    area_data = data[data['Area'] == area_name]
+    
+    # Create a figure with 2 subplots
+    fig, axes = plt.subplots(1, 2, figsize=(15, 5), constrained_layout=True)
+    
+    # Boxplot for Pesticide Use
+    sns.boxplot(ax=axes[0], x=area_data['Pesticide Use (tonnes)'])
+    axes[0].set_title(f'Pesticide Use in {area_name}')
+    axes[0].set_xlabel('Pesticide Use (tonnes)')
+    
+    # Boxplot for Crop Yield
+    sns.boxplot(ax=axes[1], x=area_data['Crop Yield (hg/ha)'])
+    axes[1].set_title(f'Crop Yield in {area_name}')
+    axes[1].set_xlabel('Crop Yield (hg/ha)')
+    
+    st.pyplot(fig)
+    
+    # Scatter plot for the relationship between pesticide use and crop yields
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.scatter(area_data['Pesticide Use (tonnes)'], area_data['Crop Yield (hg/ha)'], label='Data points')
+    ax.set_title(f'Relationship between Pesticide Use and Crop Yields in {area_name}')
+    ax.set_xlabel('Pesticide Use (tonnes)')
+    ax.set_ylabel('Crop Yield (hg/ha)')
+    
+    # Linear regression
+    X = area_data['Pesticide Use (tonnes)'].values.reshape(-1, 1)
+    Y = area_data['Crop Yield (hg/ha)'].values.reshape(-1, 1)
+    reg = LinearRegression().fit(X, Y)
+    Y_pred = reg.predict(X)
+    
+    ax.plot(X, Y_pred, color='red', linewidth=2, label='Linear regression')
+    ax.legend()
+    
+    st.pyplot(fig)
 
+# Load the dataset
+data = pd.read_csv('cleaned_pesticide_data.csv')
+
+# Create a text input for the user to enter an area name
+area_name = st.text_input("Enter the name of the country to display the graph:")
+
+# Button to trigger the plot
+if st.button("Plot",key="q31"):
+    plot_pesticide_data(area_name, data)
 
 # Load the dataset
 data = pd.read_csv('cleaned_fertilizer_data.csv')
