@@ -312,6 +312,7 @@ def main():
 
     # Add section for user input and prediction using Random Forest
     st.subheader('Predict Future Yield Using Random Forest')
+    crop_type = st.selectbox('Select Crop Type', list(crops.keys()))
     climate_zone = st.selectbox('Select Main Climate Zone', encoder.classes_.tolist())
     climate_zone_encoded = encoder.transform([climate_zone])[0]
     pesticide_use = st.number_input('Pesticide Used (tn)', value=100.0)
