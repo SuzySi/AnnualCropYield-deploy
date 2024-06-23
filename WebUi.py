@@ -294,12 +294,15 @@ def main():
     model_options = ['Linear Regression', 'Random Forest', 'Polynomial Regression', 'Gradient Boosting', 'Decision Tree']
     selected_model = st.selectbox('Choose a model to train', model_options)
 
+    # Initialize rf_model
     rf_model = None
+
     if st.button('Train Model'):
         if selected_model == 'Linear Regression':
             train_linear_regression(X_train, y_train, X_test, y_test, model_df, selected_crop_name, crop_yield_column)
         elif selected_model == 'Random Forest':
             rf_model = train_random_forest(X_train, y_train, X_test, y_test)
+            st.session_state.rf_model = rf_model  # Store in session state
         elif selected_model == 'Polynomial Regression':
             train_polynomial_regression(X_train, y_train, X_test, y_test, X, selected_crop_name)
         elif selected_model == 'Gradient Boosting':
