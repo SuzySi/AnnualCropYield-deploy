@@ -325,18 +325,6 @@ crops = {
     'Wheat': 'wheat_yield'
 }
 
-# Crop selection for modeling
-crops = {
-    'Pulses': 'pulses_yield',
-    'Maize': 'maize_yield',
-    'Sugar Crops': 'sugar_crops_yield',
-    'Tobacco': 'tobacco_yield',
-    'Rice': 'rice_yield',
-    'Wheat': 'wheat_yield'
-}
-
-
-
 
 # Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
@@ -349,7 +337,6 @@ st.subheader('Enter the input values for prediction')
 climate_zones = {'A-tropical': 0, 'B-arid': 1, 'C-temperate': 2, 'D-continental': 3}
 selected_crop_name = st.selectbox('Choose a crop for prediction', list(crops.keys()))
 crop_yield_column = crops[selected_crop_name]
-
 selected_climate_zone = st.selectbox('Choose Climate Zone', list(climate_zones.keys()))
 climate_zone_encoded = climate_zones[selected_climate_zone]
 
