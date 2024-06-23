@@ -90,6 +90,38 @@ def main():
 if __name__ == '__main__':
     main()
     
+
+cleaned_data = pd.read_csv('Q2merged_rf_temp_crop data.csv')
+def crop_temp_scatter(country_name):
+    country_data = cleaned_data[cleaned_data['Name'] == country_name]
+    crop_available = country_data['Item'].unique()
+
+    st.write(f"Available crop types in {country_name}:")
+    for i, crop in enumerate(crop_available, 1):
+        st.write(f"{i}. {crop}")
+
+    choice = st.number_input("Enter the number of the crop to compare:", min_value=1, max_value=len(crop_available), value=1) - 1
+    selected_crop = crop_available[choice]
+    crop_data = country_data[country_data['Item'] == selected_crop]
+
+    plt.figure(figsize=(10, 6))
+    ct_s = sns.scatterplot(x='Temperature', y='Crop Yield', data=crop_data)
+    ct_s.set_title(f'Temperature vs. {selected_crop} Yield in {country_name}')
+    sns.regplot(x='Temperature', y='Crop Yield', data=crop_data, scatter=False, ax=ct_s)
+    st.pyplot(plt)  # Display the plot in Streamlit
+
+def main():
+    st.title('Crop Yield vs. Temperature Scatter Plot')
+    st.subheader('Select a Country')
+
+    country_name = st.selectbox('Choose a country', cleaned_data['Name'].unique())
+
+    if st.button('Show Scatter Plot'):
+        crop_temp_scatter(country_name)
+
+if __name__ == '__main__':
+    main()['Name', 'Year']
+    
 #Question 3
 st.subheader('Question 3')
 st.markdown('Does an increase in pesticide use cause an increase in crop yields, and does this causal relationship differ by country? ')
