@@ -118,9 +118,28 @@ crop_yield.columns = crop_yield.columns.str.replace('Value', 'Crop Yield')
 filtered_cy = crop_yield[(crop_yield.Year >= 1990) & (crop_yield.Year <= 2016)]
 
 
-#check if they are changed
-
-crop_yield.loc[crop_yield['Name'] == 'Hong Kong, SAR']
-
 merged_data = filtered_cy.merge(filtered_rftemp, on = ['Name', 'Year'])
 merged_data = merged_data.merge(filtered_rftemp, on = ['Name', 'Year'])
+
+def crop_temp_scatter(country_name, item):
+    country_data = merged_data[(merged_data['Name'] == country_name) & (merged_data['Item'] == item)]
+
+    plt.figure(figsize=(10, 6))
+    sns.scatterplot(x='Temperature', y='Crop Yield', data=country_data)
+    plt.title(f'Crop Yield against Temperature for {country_name} ({item})')
+    plt.xlabel('Temperature')
+    plt.ylabel('Crop Yield')
+    st.pyplot(plt)  # Display the plot in Streamlit
+
+def main():
+    st.title('Crop Yield vs. Temperature Scatter Plot')
+    st.subheader('Select Country and Crop')
+    
+    country_name = st.selectbox('Choose a country', merged_data['Name'].unique())
+    item = st.selectbox('Choose a crop', merged_data['Item'].unique())
+
+    if st.button('Show Scatter Plot'):
+        crop_temp_scatter(country_name, item)
+
+if __name__ == '__main__':
+    main()
