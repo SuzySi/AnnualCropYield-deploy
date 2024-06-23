@@ -370,5 +370,5 @@ def predict_yield():
     st.write(f'The predicted yield for {selected_crop_name} is {predicted_yield[0]:.2f}')
 
 if __name__ == '__main__':
-    main()
+    rf_model = main()
     predict_yield()
