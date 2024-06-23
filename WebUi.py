@@ -254,7 +254,7 @@ def plot_average(data, regression_line):
     st.pyplot(plt)  # Display the plot in Streamlit
 
 def main():
-    st.title('Pesticide Data Analysis')
+    st.subheader('Pesticide Data Analysis')
     st.subheader('Relationship between Average Pesticide Use by Country and Mean Crop Yield')
 
     if st.button('Show Graph',key="pest_country_mean"):
