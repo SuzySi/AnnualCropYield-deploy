@@ -76,8 +76,10 @@ def climate_trend(country_name, trend_type):
     st.pyplot(plt)  # Display the plot in Streamlit
 
 def main():
-    st.title('Climate Trends Visualization')
     st.subheader('Question 2')
+    st.markdown('How do trends in temperature and precipitation vary among different countries and over different years(1990-2016), and how do they effect the crop yield?')
+    st.subheader('Climate Trends Visualization')
+    
 
     country_name = st.selectbox('Choose a country', filtered_rftemp['Name'].unique())
     trend_type = st.radio('Select trend type:', ['Precipitation', 'Temperature'])
