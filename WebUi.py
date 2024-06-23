@@ -92,7 +92,7 @@ def main():
     country_name = st.selectbox('Choose a country', filtered_rftemp['Name'].unique())
     trend_type = st.radio('Select trend type:', ['Precipitation', 'Temperature'])
 
-    if st.button(f'Show {trend_type} Trend'):
+    if st.button(f'Show {trend_type} Trend',key="show_trend"):
         climate_trend(country_name, trend_type)
 
 if __name__ == '__main__':
@@ -125,7 +125,7 @@ def main():
         st.write(f"Available crop types in {country_name}:")
         selected_crop = st.selectbox('Choose a crop', crop_available, key="crop_select")
 
-        if st.button('Show Scatter Plot'):
+        if st.button('Show Scatter Plot',key="show_scatter1"):
             crop_temp_scatter(country_name, selected_crop)
 
 if __name__ == '__main__':
@@ -158,7 +158,7 @@ def main():
         st.write(f"Available crop types in {country_name}:")
         selected_crop = st.selectbox('Choose a crop', crop_available, key="crp_select")
 
-        if st.button('Show Scatter Plot'):
+        if st.button('Show Scatter Plot',key="show_scatter2"):
             crop_rf_scatter(country_name, selected_crop)
 
 if __name__ == '__main__':
