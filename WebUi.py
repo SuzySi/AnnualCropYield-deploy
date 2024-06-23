@@ -28,9 +28,6 @@ if country and year:
 #plt.title(f'Top 5 Countries by Crop Yield in {year_for_top5}')
 #st.pyplot(plt)
 
-
-
-
 # Line Plot
 st.subheader('Line Plot of Average Annual Crop Yield for Selected Countries')
 
@@ -48,7 +45,7 @@ if selected_countries:
     plt.legend()
     plt.grid(True)
     st.pyplot(plt)
-
+"""
 # Heatmap
 st.subheader('Heatmap of Average Annual Crop Yield')
 
@@ -58,7 +55,7 @@ plt.xlabel('Year')
 plt.ylabel('Country')
 plt.title('Heatmap of Average Annual Crop Yield (1990-2016)')
 st.pyplot(plt)
-
+"""
 # Bar Plot
 st.subheader('Bar Plot of Average Crop Yield for a Specific Year')
 
@@ -77,7 +74,7 @@ if year:
     plt.ylabel('Country')
     plt.title(f'Average Crop Yield in {year} for Selected Countries')
     st.pyplot(plt)
-
+"""
 # Scatter Plot
 st.subheader('Scatter Plot of Average Annual Crop Yield')
 
@@ -89,4 +86,4 @@ plt.xlabel('Year')
 plt.ylabel('Average Yield')
 plt.title('Scatter Plot of Average Annual Crop Yield (1990-2016)')
 st.pyplot(plt)
-
+"""
