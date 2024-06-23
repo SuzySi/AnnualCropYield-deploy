@@ -92,13 +92,8 @@ if __name__ == '__main__':
     
 
 cleaned_data = pd.read_csv('Q2merged_rf_temp_crop data.csv')
-def crop_temp_scatter(country_name):
+def crop_temp_scatter(country_name, selected_crop):
     country_data = cleaned_data[cleaned_data['Name'] == country_name]
-    crop_available = country_data['Item'].unique()
-
-    st.write(f"Available crop types in {country_name}:")
-    selected_crop = st.selectbox('Choose a crop', crop_available)
-
     crop_data = country_data[country_data['Item'] == selected_crop]
 
     plt.figure(figsize=(10, 6))
@@ -111,10 +106,19 @@ def main():
     st.title('Crop Yield vs. Temperature Scatter Plot')
     st.subheader('Select a Country')
 
+    # Country selection
     country_name = st.selectbox('Choose a country', cleaned_data['Name'].unique(), key="country_select")
 
-    if st.button('Show Scatter Plot'):
-        crop_temp_scatter(country_name)
+    # Get available crops for the selected country
+    if country_name:
+        country_data = cleaned_data[cleaned_data['Name'] == country_name]
+        crop_available = country_data['Item'].unique()
+
+        st.write(f"Available crop types in {country_name}:")
+        selected_crop = st.selectbox('Choose a crop', crop_available, key="crop_select")
+
+        if st.button('Show Scatter Plot'):
+            crop_temp_scatter(country_name, selected_crop)
 
 if __name__ == '__main__':
     main()
