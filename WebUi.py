@@ -99,7 +99,9 @@ if __name__ == '__main__':
     main()
     
 
+# Load the data
 q2cleaned_data = pd.read_csv('Q2merged_rf_temp_crop data.csv')
+
 def crop_temp_scatter(country_name, selected_crop):
     country_data = q2cleaned_data[q2cleaned_data['Name'] == country_name]
     crop_data = country_data[country_data['Item'] == selected_crop]
@@ -110,54 +112,41 @@ def crop_temp_scatter(country_name, selected_crop):
     sns.regplot(x='Temperature', y='Crop Yield', data=crop_data, scatter=False, ax=ct_s)
     st.pyplot(plt)  # Display the plot in Streamlit
 
-def main():
-    st.title('Temperature vs. Crop Yield Scatter Plot')
-    st.subheader('Select a Country')
-
-    # Country selection
-    country_name = st.selectbox('Choose a country', q2cleaned_data['Name'].unique(), key="c_select")
-
-    # Get available crops for the selected country
-    if country_name:
-        country_data = q2cleaned_data[q2cleaned_data['Name'] == country_name]
-        crop_available = country_data['Item'].unique()
-
-        st.write(f"Available crop types in {country_name}:")
-        selected_crop = st.selectbox('Choose a crop', crop_available, key="crop_select")
-
-        if st.button('Show Scatter Plot',key="show_scatter1"):
-            crop_temp_scatter(country_name, selected_crop)
-
-if __name__ == '__main__':
-    main()
-
-def crop_rf_scatter(country_name):
+def crop_rf_scatter(country_name, selected_crop):
     country_data = q2cleaned_data[q2cleaned_data['Name'] == country_name]
-    crop_available = country_data['Item'].unique()
-
-    selected_crop = st.selectbox('Select crop type', crop_available)
-
     crop_data = country_data[country_data['Item'] == selected_crop]
+
+    plt.figure(figsize=(10, 6))
     crf_s = sns.scatterplot(x='Precipitation', y='Crop Yield', data=crop_data)
-    crf_s.set_title(f'Precipitation VS {selected_crop} Yield in {country_name}')
+    crf_s.set_title(f'Precipitation vs. {selected_crop} Yield in {country_name}')
     sns.regplot(x='Precipitation', y='Crop Yield', data=crop_data, scatter=False, ax=crf_s)
-    st.pyplot(plt)
+    st.pyplot(plt)  # Display the plot in Streamlit
 
 def main():
-    st.title('Precipitation vs. Crop Yield Scatter Plot')
-    st.subheader('Select a Country')
+    st.title('Crop Yield Scatter Plots')
+    
+    # Temperature vs. Crop Yield Section
+    st.subheader('Temperature vs. Crop Yield Scatter Plot')
+    country_name_temp = st.selectbox('Choose a country for temperature scatter plot', q2cleaned_data['Name'].unique(), key="c_select_temp")
+    if country_name_temp:
+        country_data_temp = q2cleaned_data[q2cleaned_data['Name'] == country_name_temp]
+        crop_available_temp = country_data_temp['Item'].unique()
+        selected_crop_temp = st.selectbox('Choose a crop for temperature scatter plot', crop_available_temp, key="crop_select_temp")
+        if st.button('Show Temperature vs. Crop Yield Scatter Plot', key="show_scatter_temp"):
+            crop_temp_scatter(country_name_temp, selected_crop_temp)
 
-    # Country selection
-    country_name = st.selectbox('Choose a country', q2cleaned_data['Name'].unique(), key="ct_select")
-
-    # Get available crops for the selected country
-    if country_name:
-        if st.button('Show Scatter Plot', key="show_scatter2"):
-            crop_rf_scatter(country_name)
+    # Precipitation vs. Crop Yield Section
+    st.subheader('Precipitation vs. Crop Yield Scatter Plot')
+    country_name_prec = st.selectbox('Choose a country for precipitation scatter plot', q2cleaned_data['Name'].unique(), key="c_select_prec")
+    if country_name_prec:
+        country_data_prec = q2cleaned_data[q2cleaned_data['Name'] == country_name_prec]
+        crop_available_prec = country_data_prec['Item'].unique()
+        selected_crop_prec = st.selectbox('Choose a crop for precipitation scatter plot', crop_available_prec, key="crop_select_prec")
+        if st.button('Show Precipitation vs. Crop Yield Scatter Plot', key="show_scatter_prec"):
+            crop_rf_scatter(country_name_prec, selected_crop_prec)
 
 if __name__ == '__main__':
     main()
-    
 #Question 3
 st.subheader('Question 3')
 st.markdown('Does an increase in pesticide use cause an increase in crop yields, and does this causal relationship differ by country? ')
