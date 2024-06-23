@@ -94,3 +94,4 @@ if __name__ == '__main__':
 st.subheader('Question 3')
 st.markdown('Does an increase in pesticide use cause an increase in crop yields, and does this causal relationship differ by country? ')
 
+st.subheader('Boxplots for Fertilizers Used and Crop Yield of Selected Country')
