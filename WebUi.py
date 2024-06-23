@@ -92,7 +92,6 @@ if __name__ == '__main__':
     
 
 cleaned_data = pd.read_csv('Q2merged_rf_temp_crop data.csv')
-
 def crop_temp_scatter(country_name):
     country_data = cleaned_data[cleaned_data['Name'] == country_name]
     crop_available = country_data['Item'].unique()
@@ -121,8 +120,7 @@ def main():
         crop_temp_scatter(country_name)
 
 if __name__ == '__main__':
-    main()  
-    
+    main()
     
 #Question 3
 st.subheader('Question 3')
