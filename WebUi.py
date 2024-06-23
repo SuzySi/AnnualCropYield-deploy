@@ -143,8 +143,6 @@ st.subheader('Boxplots for Fertilizers Used and Crop Yield of Selected Country')
 # Load the cleaned data
 merged_cleaned_data = pd.read_csv('merged_cleaned_data.csv')
 
-st.subheader('Crop Yield Prediction and Analysis')
-
 # Data preprocessing: Encode the categorical 'Main Climate Zone'
 encoder = LabelEncoder()
 merged_cleaned_data['Main Climate Zone'] = encoder.fit_transform(merged_cleaned_data['Main Climate Zone'])
