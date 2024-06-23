@@ -58,38 +58,32 @@ if year:
 
 #Question 2
 filtered_rf = pd.read_csv('Q2merged_rf_temp_crop data.csv')
-st.subheader('Question 2')
-def precipitation_trend(country_name):
+
+def climate_trend(country_name, trend_type):
     country_data = filtered_rf[filtered_rf['Name'] == country_name]
 
     plt.figure(figsize=(10, 6))
-    plt.plot(country_data['Year'], country_data['Precipitation'], marker='o')
-    plt.title(f'Precipitation Trend for {country_name} (1990-2016)')
-    plt.xlabel('Year')
-    plt.ylabel('Precipitation')
-    st.pyplot(plt)  # Display the plot in Streamlit
+    if trend_type == 'Precipitation':
+        plt.plot(country_data['Year'], country_data['Precipitation'], marker='o')
+        plt.title(f'Precipitation Trend for {country_name} (1990-2016)')
+        plt.ylabel('Precipitation')
+    elif trend_type == 'Temperature':
+        plt.plot(country_data['Year'], country_data['Temperature'], marker='o')
+        plt.title(f'Temperature Trend for {country_name} (1990-2016)')
+        plt.ylabel('Temperature')
 
-filtered_temp = pd.read_csv('Q2merged_rf_temp_crop data.csv')
-def temp_trend(country_name):
-    country_data = filtered_temp[filtered_temp['Name'] == country_name]
-
-    plt.figure(figsize=(10, 6))
-    plt.plot(country_data['Year'], country_data['Temperature'], marker='o')
-    plt.title(f'Temperature Trend for {country_name} (1990-2016)')
     plt.xlabel('Year')
-    plt.ylabel('Temperature')
     st.pyplot(plt)  # Display the plot in Streamlit
 
 def main():
     st.title('Climate Trends Visualization')
-    st.sidebar.subheader('Select Country')
-    country_name = st.sidebar.selectbox('Choose a country', filtered_rf['Name'].unique())
+    st.subheader('Question 2')
 
-    if st.sidebar.button('Show Precipitation Trend'):
-        precipitation_trend(country_name)
+    country_name = st.selectbox('Choose a country', filtered_rf['Name'].unique())
+    trend_type = st.radio('Select trend type:', ['Precipitation', 'Temperature'])
 
-    if st.sidebar.button('Show Temperature Trend'):
-        temp_trend(country_name)
+    if st.button(f'Show {trend_type} Trend'):
+        climate_trend(country_name, trend_type)
 
 if __name__ == '__main__':
     main()
