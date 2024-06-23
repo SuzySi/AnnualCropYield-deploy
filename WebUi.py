@@ -325,6 +325,16 @@ crops = {
     'Wheat': 'wheat_yield'
 }
 
+# Crop selection for modeling
+crops = {
+    'Pulses': 'pulses_yield',
+    'Maize': 'maize_yield',
+    'Sugar Crops': 'sugar_crops_yield',
+    'Tobacco': 'tobacco_yield',
+    'Rice': 'rice_yield',
+    'Wheat': 'wheat_yield'
+}
+
 selected_crop_name = st.selectbox('Choose a crop for prediction', list(crops.keys()))
 crop_yield_column = crops[selected_crop_name]
 
@@ -352,22 +362,11 @@ precipitation = st.number_input('Enter Precipitation (mm)', min_value=0.0)
 temperature = st.number_input('Enter Surface Air Temperature (°C)', min_value=-50.0, max_value=50.0)
 pesticide_use = st.number_input('Enter Pesticide Used (tn)', min_value=0.0)
 
-# Debugging information
-st.write("Climate Zone Encoded:", climate_zone_encoded)
-st.write("Precipitation:", precipitation)
-st.write("Temperature:", temperature)
-st.write("Pesticide Used:", pesticide_use)
-
 # Predict yield based on user inputs
 user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
-st.write("User Input for Prediction:", user_input)
-
-try:
-    predicted_yield = rf_model.predict(user_input)
-    st.subheader('Predicted Yield')
-    st.write(f'The predicted yield for {selected_crop_name} is {predicted_yield[0]:.2f}')
-except Exception as e:
-    st.write(f"Error in prediction: {e}")
+predicted_yield = rf_model.predict(user_input)
+st.subheader('Predicted Yield')
+st.write(f'The predicted yield for {selected_crop_name} is {predicted_yield[0]:.2f}')
 
 if __name__ == '__main__':
     main()
