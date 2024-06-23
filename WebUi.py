@@ -152,60 +152,7 @@ if __name__ == '__main__':
 st.subheader('Question 3')
 st.markdown('Does an increase in pesticide use cause an increase in crop yields, and does this causal relationship differ by country? ')
 
-data = pd.read_csv('cleaned_fertilizer_data.csv')
 
-def plot_fertilizer_data(country_name, data):
-    if country_name not in data['Country'].unique():
-        st.write(f"Country '{country_name}' not found in the dataset.")
-        return
-    
-    country_data = data[data['Country'] == country_name]
-    
-    # Create a figure with 2 subplots
-    fig, axes = plt.subplots(1, 2, figsize=(15, 5), constrained_layout=True)
-    
-    # Boxplot for Fertilizer Use
-    sns.boxplot(ax=axes[0], x=country_data['Nitrogen Fertilizer Use (kg/ha)'])
-    axes[0].set_title(f'Fertilizer Use in {country_name}')
-    axes[0].set_xlabel('Fertilizer Use (kg/ha)')
-    
-    # Boxplot for Crop Yield
-    sns.boxplot(ax=axes[1], x=country_data['Cereal Yield (tonnes/ha)'])
-    axes[1].set_title(f'Crop Yield in {country_name}')
-    axes[1].set_xlabel('Crop Yield (tonnes/ha)')
-    
-    st.pyplot(fig)  # Display the plot in Streamlit
-    
-    # Scatter plot for the relationship between fertilizer use and crop yields
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.scatter(country_data['Nitrogen Fertilizer Use (kg/ha)'], country_data['Cereal Yield (tonnes/ha)'], label='Data points')
-    ax.set_title(f'Relationship between Fertilizer Use and Crop Yields in {country_name}')
-    ax.set_xlabel('Fertilizer Use (kg/ha)')
-    ax.set_ylabel('Crop Yield (tonnes/ha)')
-    
-    # Linear regression
-    X = country_data['Nitrogen Fertilizer Use (kg/ha)'].values.reshape(-1, 1)
-    Y = country_data['Cereal Yield (tonnes/ha)'].values.reshape(-1, 1)
-    reg = LinearRegression().fit(X, Y)
-    Y_pred = reg.predict(X)
-    
-    ax.plot(X, Y_pred, color='red', linewidth=2, label='Linear regression')
-    ax.legend()
-    
-    st.pyplot(fig)  # Display the plot in Streamlit
-
-def main():
-    st.title('Fertilizer Data Analysis')
-    st.subheader('Select a Country')
-
-    # Country selection
-    country_name = st.selectbox('Choose a country', data['Country'].unique())
-
-    if st.button('Show Graph',key="q31"):
-        plot_fertilizer_data(country_name, data)
-
-if __name__ == '__main__':
-    main()
 
 
 # Load the dataset
