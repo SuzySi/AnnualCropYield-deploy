@@ -448,6 +448,7 @@ if __name__ == '__main__':
 #Question 4
 
 def main():
+    st.subheader('Question 4')
     merged_cleaned_data = pd.read_csv('merged_cleaned_data.csv')
     encoder = LabelEncoder()
     encoder.fit(merged_cleaned_data['Main Climate Zone'])
