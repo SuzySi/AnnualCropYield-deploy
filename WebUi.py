@@ -152,12 +152,11 @@ st.subheader('Question 3')
 st.markdown('Does an increase in pesticide use cause an increase in crop yields, and does this causal relationship differ by country? ')
 
 # Load the dataset
-data = pd.read_csv('cleaned_pesticide_data.csv')
+data = pd.read_csv('cleaned_fertilizer_data.csv')
 
-# Function to plot the graph for a specific country in fertilizer dataset
 def plot_fertilizer_data(country_name, data):
     if country_name not in data['Country'].unique():
-        print(f"Country '{country_name}' not found in the dataset.")
+        st.write(f"Country '{country_name}' not found in the dataset.")
         return
     
     country_data = data[data['Country'] == country_name]
@@ -175,6 +174,8 @@ def plot_fertilizer_data(country_name, data):
     axes[1].set_title(f'Crop Yield in {country_name}')
     axes[1].set_xlabel('Crop Yield (tonnes/ha)')
     
+    st.pyplot(fig)  # Display the plot in Streamlit
+    
     # Scatter plot for the relationship between fertilizer use and crop yields
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.scatter(country_data['Nitrogen Fertilizer Use (kg/ha)'], country_data['Cereal Yield (tonnes/ha)'], label='Data points')
@@ -191,14 +192,20 @@ def plot_fertilizer_data(country_name, data):
     ax.plot(X, Y_pred, color='red', linewidth=2, label='Linear regression')
     ax.legend()
     
-    plt.show()
+    st.pyplot(fig)  # Display the plot in Streamlit
 
-# Load the dataset
-data = pd.read_csv('cleaned_fertilizer_data.csv')
+def main():
+    st.title('Fertilizer Data Analysis')
+    st.subheader('Select a Country')
 
-# Prompt the user to enter a country name
-country_name = input("Enter the name of the country to display the graph: ")
-plot_fertilizer_data(country_name, data)
+    # Country selection
+    country_name = st.selectbox('Choose a country', data['Country'].unique())
+
+    if st.button('Show Graph'):
+        plot_fertilizer_data(country_name, data)
+
+if __name__ == '__main__':
+    main()
 
 
 #Question 4
