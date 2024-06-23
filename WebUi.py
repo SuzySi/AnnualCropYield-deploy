@@ -161,8 +161,6 @@ def main():
         if st.button('Show Scatter Plot',key="show_scatter2"):
             crop_rf_scatter(country_name, selected_crop)
 
-if __name__ == '__main__':
-    main()
     
 #Question 3
 st.subheader('Question 3')
