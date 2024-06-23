@@ -156,7 +156,7 @@ def main():
         crop_available = country_data['Item'].unique()
 
         st.write(f"Available crop types in {country_name}:")
-        selected_crop = st.selectbox('Choose a crop', crop_available, key="crop_select")
+        selected_crop = st.selectbox('Choose a crop', crop_available, key="crp_select")
 
         if st.button('Show Scatter Plot'):
             crop_rf_scatter(country_name, selected_crop)
