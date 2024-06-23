@@ -55,3 +55,38 @@ if year:
     plt.ylabel('Country')
     plt.title(f'Average Crop Yield in {year} for Selected Countries')
     st.pyplot(plt)
+
+st.subheader('Question 2')
+def precipitation_trend(country_name):
+    country_data = filtered_rf[filtered_rf['Name'] == country_name]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(country_data['Year'], country_data['Precipitation'], marker='o')
+    plt.title(f'Precipitation Trend for {country_name} (1990-2016)')
+    plt.xlabel('Year')
+    plt.ylabel('Precipitation')
+    st.pyplot(plt)  # Display the plot in Streamlit
+
+def temp_trend(country_name):
+    country_data = filtered_temp[filtered_temp['Name'] == country_name]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(country_data['Year'], country_data['Temperature'], marker='o')
+    plt.title(f'Temperature Trend for {country_name} (1990-2016)')
+    plt.xlabel('Year')
+    plt.ylabel('Temperature')
+    st.pyplot(plt)  # Display the plot in Streamlit
+
+def main():
+    st.title('Climate Trends Visualization')
+    st.sidebar.subheader('Select Country')
+    country_name = st.sidebar.selectbox('Choose a country', filtered_rf['Name'].unique())
+
+    if st.sidebar.button('Show Precipitation Trend'):
+        precipitation_trend(country_name)
+
+    if st.sidebar.button('Show Temperature Trend'):
+        temp_trend(country_name)
+
+if __name__ == '__main__':
+    main()
