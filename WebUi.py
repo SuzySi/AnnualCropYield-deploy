@@ -87,6 +87,40 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
+crop_yield = pd.read_csv('yield.csv') #Path may differ
+crop_yield.drop(columns=['Domain Code', 'Domain', 'Area Code', 'Element', 'Element Code','Item Code','Year Code'], inplace = True)
 
-#merged_data = filtered_cy.merge(filtered_rftemp, on = ['Name', 'Year'])
-#merged_data = merged_data.merge(filtered_rftemp, on = ['Name', 'Year'])
+crop_yield.columns = crop_yield.columns.str.replace('Area', 'Name')
+print(crop_yield.Name.unique())
+
+#REPLACING NAMES IS HERE
+crop_yield['Name'].replace({
+    'China, Taiwan Province of':'Taiwan',
+    'China, mainland': 'China',
+    'China, Hong Kong SAR': 'Hong Kong, SAR',
+    'Bahamas':'The Bahamas',
+    'Bolivia (Plurinational State of)':'Bolivia',
+    'Czechia':'Czech Republic',
+    'Gambia':'The Gambia' ,
+    'Micronesia (Federated States of)':'Federated States of Micronesia',
+    'Iran (Islamic Republic of)':'Islamic Republic of Iran',
+    'Réunion': 'Reunion',
+    'Venezuela (Bolivarian Republic of)': 'Venezuela',
+    'United Republic of Tanzania': 'Tanzania' 
+}, inplace = True
+                          
+)
+#crop_yield['Name'] = crop_yield['Name'].replace('China, Taiwan Province of', 'Taiwan')
+#crop_yield['Name'] = crop_yield['Name'].replace('China, mainland', 'China')
+#crop_yield['Name'] = crop_yield['Name'].replace('China, Hong Kong SAR', 'Hong Kong')
+crop_yield.columns = crop_yield.columns.str.replace('Value', 'Crop Yield')
+filtered_cy = crop_yield[(crop_yield.Year >= 1990) & (crop_yield.Year <= 2016)]
+
+
+#check if they are changed
+
+crop_yield.loc[crop_yield['Name'] == 'Hong Kong, SAR']
+
+merged_data = filtered_cy.merge(filtered_rftemp, on = ['Name', 'Year'])
+merged_data = merged_data.merge(filtered_rftemp, on = ['Name', 'Year'])
