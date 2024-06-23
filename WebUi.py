@@ -309,3 +309,25 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
+# Data preprocessing: Encode the categorical 'Main Climate Zone'
+encoder = LabelEncoder()
+merged_cleaned_data['Main Climate Zone'] = encoder.fit_transform(merged_cleaned_data['Main Climate Zone'])
+climate_zone_mapping = {0: 'A-tropical', 1: 'B-arid', 2: 'C-temperate', 3: 'D-continental'}
+climate_zone_reverse_mapping = {v: k for k, v in climate_zone_mapping.items()}
+
+st.subheader('Input Parameters for Prediction')
+
+# User input for prediction
+selected_climate_zone = st.selectbox('Choose a climate zone', list(climate_zone_reverse_mapping.keys()))
+climate_zone_encoded = climate_zone_reverse_mapping[selected_climate_zone]
+
+precipitation = st.number_input('Enter Precipitation (mm)', min_value=0.0)
+temperature = st.number_input('Enter Surface Air Temperature (°C)', min_value=-50.0, max_value=50.0)
+pesticide_use = st.number_input('Enter Pesticide Used (tn)', min_value=0.0)
+
+input_data = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
+
+if st.button('Predict Crop Yield'):
+    predicted_yield = rf_model.predict(input_data)
+    st.write(f'Predicted yield for {selected_crop_name}: {predicted_yield[0]:.2f}')
