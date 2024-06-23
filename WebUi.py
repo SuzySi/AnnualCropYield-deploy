@@ -1,3 +1,4 @@
+from sklearn.base import r2_score
 import streamlit as st 
 import pandas as pd
 import numpy as np 
