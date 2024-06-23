@@ -195,7 +195,7 @@ def plot_fertilizer_data(country_name, data):
     st.pyplot(fig)  # Display the plot in Streamlit
 
 def main():
-    st.title('Fertilizer Data Analysis')
+    st.subheader('Fertiliser vs Crop Yield For A Specific Country')
     st.subheader('Select a Country')
 
     # Country selection
