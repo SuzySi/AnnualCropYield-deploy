@@ -352,21 +352,23 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # Train the Random Forest model
 rf_model = train_random_forest(X_train, y_train, X_test, y_test)
 
-# User inputs for prediction
-st.subheader('Enter the input values for prediction')
-climate_zones = {'A-tropical': 0, 'B-arid': 1, 'C-temperate': 2, 'D-continental': 3}
-selected_climate_zone = st.selectbox('Choose Climate Zone', list(climate_zones.keys()))
-climate_zone_encoded = climate_zones[selected_climate_zone]
+def predict_yield():
+    # User inputs for prediction
+    st.subheader('Enter the input values for prediction')
+    climate_zones = {'A-tropical': 0, 'B-arid': 1, 'C-temperate': 2, 'D-continental': 3}
+    selected_climate_zone = st.selectbox('Choose Climate Zone', list(climate_zones.keys()))
+    climate_zone_encoded = climate_zones[selected_climate_zone]
 
-precipitation = st.number_input('Enter Precipitation (mm)', min_value=0.0)
-temperature = st.number_input('Enter Surface Air Temperature (°C)', min_value=-50.0, max_value=50.0)
-pesticide_use = st.number_input('Enter Pesticide Used (tn)', min_value=0.0)
+    precipitation = st.number_input('Enter Precipitation (mm)', min_value=0.0)
+    temperature = st.number_input('Enter Surface Air Temperature (°C)', min_value=-50.0, max_value=50.0)
+    pesticide_use = st.number_input('Enter Pesticide Used (tn)', min_value=0.0)
 
-# Predict yield based on user inputs
-user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
-predicted_yield = rf_model.predict(user_input)
-st.subheader('Predicted Yield')
-st.write(f'The predicted yield for {selected_crop_name} is {predicted_yield[0]:.2f}')
+    # Predict yield based on user inputs
+    user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
+    predicted_yield = rf_model.predict(user_input)
+    st.subheader('Predicted Yield')
+    st.write(f'The predicted yield for {selected_crop_name} is {predicted_yield[0]:.2f}')
 
 if __name__ == '__main__':
     main()
+    predict_yield()
