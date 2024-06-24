@@ -549,7 +549,7 @@ def main():
     if st.button('Predict Future Yield',key="show_model"):
         user_input = np.array([[climate_zone_encoded, pesticide_use, temperature, precipitation]])
         predicted_yield = loaded_model.predict(user_input)
-        st.write(f'The predicted yield for {selected_crop_name} is: {predicted_yield[0]:.2f} hg/ha')
+        st.write(f'The predicted yield for {selected_crop_name} is: {predicted_yield[0]:.2f} tonnes/hectare')
 
 if __name__ == '__main__':
     main()
